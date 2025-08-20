@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id          Int      @id @default(autoincrement())
+  name        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id])
+
+  @@index([name])
+  @@index([createdById], map: "Post_createdById_fkey")
+}
+
+model Account {
+  id                       String  @id @default(cuid())
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String? @db.Text
+  access_token             String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
+  refresh_token_expires_in Int?
+  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId], map: "Account_userId_fkey")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Session_userId_fkey")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  posts         Post[]
+  sessions      Session[]
+  admin         Boolean   @default(false)
+  apipie_key    Bytes?
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Responders {
+  id          Int    @id @default(autoincrement())
+  owner       String @db.VarChar(255)
+  name        String @db.VarChar(255)
+  model       String @db.VarChar(100)
+  prompt      String @db.Text
+  voice_model String? @db.VarChar(100)
+  voice       String? @db.VarChar(100)
+  max_tokens  Int?
+  short_mem   Int?   @default(3)
+  long_mem    Int?   @default(2)
+  mem_expire  Int?   @default(1440)
+
+  @@unique([owner, name], name: "responder")
+  @@map("responders")
+}
+
+enum LibraryType {
+  transcript
+  note
+}
+
+model Library {
+  id            String      @id @db.Char(36)
+  user_id       String      @db.VarChar(64)
+  type          LibraryType @default(transcript)
+  title         String      @db.VarChar(255)
+  responder     String?     @db.VarChar(100)
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  message_count Int         @default(0)
+  messages_json String      @db.LongText
+
+  @@index([user_id])
+  @@index([type])
+  @@map("library")
+}

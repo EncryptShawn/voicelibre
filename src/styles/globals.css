@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans:
+    var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+:root {
+  --background: 255 255 255;
+  --foreground: 0 0 0;
+  --primary: 59 130 246;
+  --secondary: 107 114 128;
+
+  /* Add header/footer background for light theme (was missing — caused transparent nav) */
+  --header-footer-bg: 255 255 255;
+
+  --assistant-bg: 245 245 245;
+  --assistant-text: 0 0 0;
+  --user-bg: 219 243 241;
+  --user-text: 0 0 0;
+  --bottom-bar-height: 48px; /* matches h-12 */
+  --bottom-bar-gap: 5px; /* requested lift above bottom */
+}
+
+[data-theme="dark"] {
+  --background: 17 24 39;
+  --header-footer-bg: 30 40 61;
+  --foreground: 243 244 246;
+  --primary: 96 165 250;
+  --secondary: 156 163 175;
+
+  --assistant-bg: 25 25 30;
+  --assistant-text: 255 255 255;
+  --user-bg: 38 100 100;
+  --user-text: 255 255 255;
+}
+
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.gradient-mask-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--header-footer-bg)) 0%,
+    rgba(var(--header-footer-bg), 0) 100%
+  );
+  pointer-events: none;
+  z-index: 10;
+}
