@@ -1,0 +1,9 @@
+export { default as MemoryIcon } from "./MemoryIcon";
+export { default as InternetIcon } from "./Internet";
+export { default as HandsfreeIcon } from "./Handsfree";
+export { default as SaveIcon } from "./Save";
+export { default as EditIcon } from "./Edit";
+export { default as ReloadIcon } from "./Reload";
+export { default as ReloadRememberIcon } from "./ReloadRemember";
+export { default as ChatIcon } from "./Chat";
+export { default as TranscriptsIcon } from "./Transcripts";
